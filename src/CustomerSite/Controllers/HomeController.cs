@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Marketplace.SaaS.Accelerator.CustomerSite.Models;
 using Marketplace.SaaS.Accelerator.DataAccess.Contracts;
 using Marketplace.SaaS.Accelerator.DataAccess.Entities;
 using Marketplace.SaaS.Accelerator.Services.Contracts;
@@ -15,9 +16,12 @@ using Marketplace.SaaS.Accelerator.Services.Services;
 using Marketplace.SaaS.Accelerator.Services.StatusHandlers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NuGet.Common;
 
 namespace Marketplace.SaaS.Accelerator.CustomerSite.Controllers;
 
@@ -782,6 +786,90 @@ public class HomeController : BaseController
         else
         {
             return this.RedirectToAction(nameof(this.Index));
+        }
+    }
+
+    /// <summary>
+    /// Displays a contact us form
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<IActionResult> CustomerSupport()
+    {
+        this.logger.LogInformation("Home Controller / CustomerSupport ");
+        try
+        {
+            if (this.User.Identity.IsAuthenticated)
+            {
+                var userDetail = GetCurrentUserDetail();
+
+                return this.View(new CustomerSupportViewModel()
+                {
+                    CustomerEmail = userDetail?.EmailAddress
+                });
+            }
+            else
+            {
+                return this.Challenge(
+                        new AuthenticationProperties
+                        {
+                            RedirectUri = "/Home/CustomerSupport",
+                        }, OpenIdConnectDefaults.AuthenticationScheme);
+            }
+        }
+        catch (Exception ex)
+        {
+            this.logger.LogError("Message:{0} :: {1}   ", ex.Message, ex.InnerException);
+            return this.View("Error", ex);
+        }
+    }
+
+    /// <summary>
+    /// Posts a customer support message
+    /// </summary>
+    /// <param name="model"></param>
+    /// <param name="attachments">File attachments</param>
+    /// <returns></returns>
+    [Authorize]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CustomerSupport(CustomerSupportViewModel model)
+    {
+        this.logger.LogInformation("Home Controller / POST CustomerSupport ");
+        try
+        {
+            if (this.User.Identity.IsAuthenticated)
+            {
+                this.TempData["ShowWelcomeScreen"] = "True";
+                SubscriptionViewModel subscriptionDetail = new SubscriptionViewModel();
+                subscriptionDetail.Subscriptions = this.subscriptionService.GetPartnerSubscription(this.CurrentUserEmailAddress, default, true).ToList();
+                foreach (var subscription in subscriptionDetail.Subscriptions)
+                {
+                    Plans planDetail = this.planRepository.GetById(subscription.PlanId);
+                    subscription.IsAutomaticProvisioningSupported = Convert.ToBoolean(this.applicationConfigRepository.GetValueByName("IsAutomaticProvisioningSupported"));
+                    subscription.AcceptSubscriptionUpdates = Convert.ToBoolean(this.applicationConfigRepository.GetValueByName("AcceptSubscriptionUpdates"));
+                    subscription.IsPerUserPlan = planDetail.IsPerUser.HasValue ? planDetail.IsPerUser.Value : false;
+                }
+
+                subscriptionDetail.SaaSAppUrl = this.apiService.GetSaaSAppURL();
+
+                if (this.TempData["ErrorMsg"] != null)
+                {
+                    subscriptionDetail.IsSuccess = false;
+                    subscriptionDetail.ErrorMessage = Convert.ToString(this.TempData["ErrorMsg"]);
+                }
+
+                return this.View(subscriptionDetail);
+            }
+            else
+            {
+                return this.RedirectToAction(nameof(this.Index));
+            }
+        }
+        catch (Exception ex)
+        {
+            this.logger.LogError("Message:{0} :: {1}   ", ex.Message, ex.InnerException);
+            return this.View("Error", ex);
         }
     }
 
