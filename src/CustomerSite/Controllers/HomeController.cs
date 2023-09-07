@@ -1,11 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE file in the project root for license information.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
 using Marketplace.SaaS.Accelerator.CustomerSite.Models;
 using Marketplace.SaaS.Accelerator.DataAccess.Contracts;
 using Marketplace.SaaS.Accelerator.DataAccess.Entities;
@@ -18,10 +13,13 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NuGet.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Marketplace.SaaS.Accelerator.CustomerSite.Controllers;
 
@@ -410,7 +408,7 @@ public class HomeController : BaseController
             {
                 // Validate subscription from same customer
                 var subscriptionDetail = this.subscriptionService.GetPartnerSubscription(this.CurrentUserEmailAddress, subscriptionId).FirstOrDefault();
-                if(subscriptionDetail == null)
+                if (subscriptionDetail == null)
                 {
                     return this.RedirectToAction(nameof(this.Index));
                 }
@@ -664,8 +662,8 @@ public class HomeController : BaseController
                                 var changePlanOperationResult = await this.apiService.GetOperationStatusResultAsync(subscriptionDetail.Id, jsonResult.OperationId).ConfigureAwait(false);
                                 changePlanOperationStatus = changePlanOperationResult.Status;
 
-                                this.logger.LogInformation($"Plan Change Progress. SubscriptionId: {subscriptionDetail.Id} ToPlan: {subscriptionDetail.PlanId} UserId: {currentUserId} OperationId: {jsonResult.OperationId} Operationstatus: { changePlanOperationStatus }.");
-                                await this.applicationLogService.AddApplicationLog($"Plan Change Progress. SubscriptionId: {subscriptionDetail.Id} ToPlan: {subscriptionDetail.PlanId} UserId: {currentUserId} OperationId: {jsonResult.OperationId} Operationstatus: { changePlanOperationStatus }.").ConfigureAwait(false);
+                                this.logger.LogInformation($"Plan Change Progress. SubscriptionId: {subscriptionDetail.Id} ToPlan: {subscriptionDetail.PlanId} UserId: {currentUserId} OperationId: {jsonResult.OperationId} Operationstatus: {changePlanOperationStatus}.");
+                                await this.applicationLogService.AddApplicationLog($"Plan Change Progress. SubscriptionId: {subscriptionDetail.Id} ToPlan: {subscriptionDetail.PlanId} UserId: {currentUserId} OperationId: {jsonResult.OperationId} Operationstatus: {changePlanOperationStatus}.").ConfigureAwait(false);
 
                                 //wait and check every 5secs
                                 await Task.Delay(5000);
@@ -684,8 +682,8 @@ public class HomeController : BaseController
                             }
                             else
                             {
-                                this.logger.LogInformation($"Plan Change Failed. SubscriptionId: {subscriptionDetail.Id} ToPlan : {subscriptionDetail.PlanId} UserId: {currentUserId} OperationId: {jsonResult.OperationId} Operation status { changePlanOperationStatus }.");
-                                await this.applicationLogService.AddApplicationLog($"Plan Change Failed. SubscriptionId: {subscriptionDetail.Id} ToPlan: {subscriptionDetail.PlanId} UserId: {currentUserId} OperationId: {jsonResult.OperationId} Operation status { changePlanOperationStatus }.").ConfigureAwait(false);
+                                this.logger.LogInformation($"Plan Change Failed. SubscriptionId: {subscriptionDetail.Id} ToPlan : {subscriptionDetail.PlanId} UserId: {currentUserId} OperationId: {jsonResult.OperationId} Operation status {changePlanOperationStatus}.");
+                                await this.applicationLogService.AddApplicationLog($"Plan Change Failed. SubscriptionId: {subscriptionDetail.Id} ToPlan: {subscriptionDetail.PlanId} UserId: {currentUserId} OperationId: {jsonResult.OperationId} Operation status {changePlanOperationStatus}.").ConfigureAwait(false);
 
                                 throw new MarketplaceException($"Plan change operation failed with operation status {changePlanOperationStatus}.");
                             }
@@ -741,8 +739,8 @@ public class HomeController : BaseController
                                 var changeQuantityOperationResult = await this.apiService.GetOperationStatusResultAsync(subscriptionDetail.Id, jsonResult.OperationId).ConfigureAwait(false);
                                 changeQuantityOperationStatus = changeQuantityOperationResult.Status;
 
-                                this.logger.LogInformation($"Quantity Change Progress. SubscriptionId: {subscriptionDetail.Id} ToQuantity: {subscriptionDetail.Quantity} UserId: {currentUserId} OperationId: {jsonResult.OperationId} Operationstatus: { changeQuantityOperationStatus }.");
-                                await this.applicationLogService.AddApplicationLog($"Quantity Change Progress. SubscriptionId: {subscriptionDetail.Id} ToQuantity: {subscriptionDetail.Quantity} UserId: {currentUserId} OperationId: {jsonResult.OperationId} Operationstatus: { changeQuantityOperationStatus }.").ConfigureAwait(false);
+                                this.logger.LogInformation($"Quantity Change Progress. SubscriptionId: {subscriptionDetail.Id} ToQuantity: {subscriptionDetail.Quantity} UserId: {currentUserId} OperationId: {jsonResult.OperationId} Operationstatus: {changeQuantityOperationStatus}.");
+                                await this.applicationLogService.AddApplicationLog($"Quantity Change Progress. SubscriptionId: {subscriptionDetail.Id} ToQuantity: {subscriptionDetail.Quantity} UserId: {currentUserId} OperationId: {jsonResult.OperationId} Operationstatus: {changeQuantityOperationStatus}.").ConfigureAwait(false);
 
                                 //wait and check every 5secs
                                 await Task.Delay(5000);
@@ -761,9 +759,9 @@ public class HomeController : BaseController
                             }
                             else
                             {
-                                this.logger.LogInformation($"Quantity Change Failed. SubscriptionId: {subscriptionDetail.Id} ToQuantity: {subscriptionDetail.Quantity} UserId: {currentUserId} OperationId: {jsonResult.OperationId} Operationstatus: { changeQuantityOperationStatus }.");
-                                await this.applicationLogService.AddApplicationLog($"Quantity Change Failed. SubscriptionId: {subscriptionDetail.Id} ToQuantity: {subscriptionDetail.Quantity} UserId: {currentUserId} OperationId: {jsonResult.OperationId} Operationstatus: { changeQuantityOperationStatus }.").ConfigureAwait(false);
-                                    
+                                this.logger.LogInformation($"Quantity Change Failed. SubscriptionId: {subscriptionDetail.Id} ToQuantity: {subscriptionDetail.Quantity} UserId: {currentUserId} OperationId: {jsonResult.OperationId} Operationstatus: {changeQuantityOperationStatus}.");
+                                await this.applicationLogService.AddApplicationLog($"Quantity Change Failed. SubscriptionId: {subscriptionDetail.Id} ToQuantity: {subscriptionDetail.Quantity} UserId: {currentUserId} OperationId: {jsonResult.OperationId} Operationstatus: {changeQuantityOperationStatus}.").ConfigureAwait(false);
+
                                 throw new MarketplaceException($"Quantity Change operation failed with operation status {changeQuantityOperationStatus}.");
                             }
                         }
@@ -841,25 +839,50 @@ public class HomeController : BaseController
             if (this.User.Identity.IsAuthenticated)
             {
                 this.TempData["ShowWelcomeScreen"] = "True";
-                SubscriptionViewModel subscriptionDetail = new SubscriptionViewModel();
-                subscriptionDetail.Subscriptions = this.subscriptionService.GetPartnerSubscription(this.CurrentUserEmailAddress, default, true).ToList();
-                foreach (var subscription in subscriptionDetail.Subscriptions)
+                //SubscriptionViewModel subscriptionDetail = new SubscriptionViewModel();
+                //subscriptionDetail.Subscriptions = this.subscriptionService.GetPartnerSubscription(this.CurrentUserEmailAddress, default, true).ToList();
+                //foreach (var subscription in subscriptionDetail.Subscriptions)
+                //{
+                //    Plans planDetail = this.planRepository.GetById(subscription.PlanId);
+                //    subscription.IsAutomaticProvisioningSupported = Convert.ToBoolean(this.applicationConfigRepository.GetValueByName("IsAutomaticProvisioningSupported"));
+                //    subscription.AcceptSubscriptionUpdates = Convert.ToBoolean(this.applicationConfigRepository.GetValueByName("AcceptSubscriptionUpdates"));
+                //    subscription.IsPerUserPlan = planDetail.IsPerUser.HasValue ? planDetail.IsPerUser.Value : false;
+                //}
+
+                //subscriptionDetail.SaaSAppUrl = this.apiService.GetSaaSAppURL();
+
+                //if (this.TempData["ErrorMsg"] != null)
+                //{
+                //    subscriptionDetail.IsSuccess = false;
+                //    subscriptionDetail.ErrorMessage = Convert.ToString(this.TempData["ErrorMsg"]);
+                //}
+
+                var smtpHost = applicationConfigRepository.GetValueByName("SMTPHost");
+                var smptPort = int.Parse(applicationConfigRepository.GetValueByName("SMTPPort"));
+                var smtpFromEmail = applicationConfigRepository.GetValueByName("SMTPFromEmail");
+                var smtpPassword = applicationConfigRepository.GetValueByName("SMTPPassword");
+                var smtpUserName = applicationConfigRepository.GetValueByName("SMTPUserName");
+                var smtpSslEnabled = bool.Parse(applicationConfigRepository.GetValueByName("SMTPSslEnabled"));
+
+
+                var emailContent = new EmailContentModel()
                 {
-                    Plans planDetail = this.planRepository.GetById(subscription.PlanId);
-                    subscription.IsAutomaticProvisioningSupported = Convert.ToBoolean(this.applicationConfigRepository.GetValueByName("IsAutomaticProvisioningSupported"));
-                    subscription.AcceptSubscriptionUpdates = Convert.ToBoolean(this.applicationConfigRepository.GetValueByName("AcceptSubscriptionUpdates"));
-                    subscription.IsPerUserPlan = planDetail.IsPerUser.HasValue ? planDetail.IsPerUser.Value : false;
-                }
+                    CustomerEmail = model.CustomerEmail,
+                    ToEmails = "notifications@cosmosws.io",
+                    CopyToCustomer = true,
+                    Subject = model.Subject,
+                    Body = model.MessageContent,
+                    SMTPHost = smtpHost,
+                    SSL = smtpSslEnabled,
+                    Password = smtpPassword,
+                    UserName = smtpUserName,
+                    FromEmail = smtpFromEmail,
+                    Port = smptPort
+                };
 
-                subscriptionDetail.SaaSAppUrl = this.apiService.GetSaaSAppURL();
+                emailService.SendEmail(emailContent);
 
-                if (this.TempData["ErrorMsg"] != null)
-                {
-                    subscriptionDetail.IsSuccess = false;
-                    subscriptionDetail.ErrorMessage = Convert.ToString(this.TempData["ErrorMsg"]);
-                }
-
-                return this.View(subscriptionDetail);
+                return this.View(model);
             }
             else
             {

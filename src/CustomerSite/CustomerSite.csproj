@@ -7,6 +7,8 @@
 	  <Product>Marketplace.SaaS.Accelerator</Product>
 	  <AssemblyName>CustomerSite</AssemblyName>
 	  <RootNamespace>Marketplace.SaaS.Accelerator.CustomerSite</RootNamespace>
+	  <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
+	  <UserSecretsId>9eb9d1cf-9792-432a-879c-b87dbdfb5c2b</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,11 +23,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="6.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.1">
+    <PackageReference Include="AspNetCore.Identity.Services.SendGrid" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.21" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="6.0.21" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.21" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.21" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.21">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
