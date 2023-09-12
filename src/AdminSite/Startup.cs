@@ -66,18 +66,18 @@ public class Startup
 
         var config = new SaaSApiClientConfiguration()
         {
-            AdAuthenticationEndPoint = this.Configuration["SaaSApiConfiguration:AdAuthenticationEndPoint"],
-            ClientId = this.Configuration["SaaSApiConfiguration:ClientId"] ?? Guid.Empty.ToString(),
-            ClientSecret = this.Configuration["SaaSApiConfiguration:ClientSecret"] ?? String.Empty,
-            FulFillmentAPIBaseURL = this.Configuration["SaaSApiConfiguration:FulFillmentAPIBaseURL"],
-            MTClientId = this.Configuration["SaaSApiConfiguration:MTClientId"] ?? Guid.Empty.ToString(),
-            FulFillmentAPIVersion = this.Configuration["SaaSApiConfiguration:FulFillmentAPIVersion"],
-            GrantType = this.Configuration["SaaSApiConfiguration:GrantType"],
-            Resource = this.Configuration["SaaSApiConfiguration:Resource"],
-            SaaSAppUrl = this.Configuration["SaaSApiConfiguration:SaaSAppUrl"],
-            SignedOutRedirectUri = this.Configuration["SaaSApiConfiguration:SignedOutRedirectUri"],
-            TenantId = this.Configuration["SaaSApiConfiguration:TenantId"] ?? Guid.Empty.ToString(),
-            SupportMeteredBilling = Convert.ToBoolean(this.Configuration["SaaSApiConfiguration:supportmeteredbilling"])
+            AdAuthenticationEndPoint = this.Configuration["saasapiconfiguration_adauthenticationendpoint"],
+            ClientId = this.Configuration["saasapiconfiguration_clientid"] ?? Guid.Empty.ToString(),
+            ClientSecret = this.Configuration["saasapiconfiguration_clientsecret"] ?? String.Empty,
+            FulFillmentAPIBaseURL = this.Configuration["saasapiconfiguration_fulfillmentapibaseurl"],
+            MTClientId = this.Configuration["saasapiconfiguration_mtclientid"] ?? Guid.Empty.ToString(),
+            FulFillmentAPIVersion = this.Configuration["saasapiconfiguration_fulfillmentapiversion"],
+            GrantType = this.Configuration["saasapiconfiguration_granttype"],
+            Resource = this.Configuration["saasapiconfiguration_resource"],
+            SaaSAppUrl = this.Configuration["saasapiconfiguration_saasappurl"],
+            SignedOutRedirectUri = this.Configuration["saasapiconfiguration_signedoutredirecturi"],
+            TenantId = this.Configuration["saasapiconfiguration_tenantid"] ?? Guid.Empty.ToString(),
+            SupportMeteredBilling = Convert.ToBoolean(this.Configuration["saasapiconfigurationn_supportmeteredbilling"])
         };
         var knownUsers = new KnownUsersModel()
         {

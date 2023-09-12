@@ -7,6 +7,8 @@
 	  <Product>Marketplace.SaaS.Accelerator</Product>
 	  <AssemblyName>AdminSite</AssemblyName>
 	  <RootNamespace>Marketplace.SaaS.Accelerator.AdminSite</RootNamespace>
+	  <UserSecretsId>f16dfd1a-16f1-497e-bd03-0bae64a413c2</UserSecretsId>
+	  <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
@@ -55,6 +57,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.4" />
   </ItemGroup>
 
   <ItemGroup>

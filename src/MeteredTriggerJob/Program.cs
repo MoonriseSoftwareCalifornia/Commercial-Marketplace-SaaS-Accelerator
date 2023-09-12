@@ -27,13 +27,13 @@ class Program
 
         var config = new SaaSApiClientConfiguration()
         {
-            AdAuthenticationEndPoint = configuration["SaaSApiConfiguration:AdAuthenticationEndPoint"],
-            ClientId = configuration["SaaSApiConfiguration:ClientId"],
-            ClientSecret = configuration["SaaSApiConfiguration:ClientSecret"],
-            GrantType = configuration["SaaSApiConfiguration:GrantType"],
-            Resource = configuration["SaaSApiConfiguration:Resource"],
-            TenantId = configuration["SaaSApiConfiguration:TenantId"],
-            SupportMeteredBilling = Convert.ToBoolean(configuration["SaaSApiConfiguration:SupportMeteredBilling"])
+            AdAuthenticationEndPoint = configuration["SaaSApiConfiguration_AdAuthenticationEndPoint"],
+            ClientId = configuration["SaaSApiConfiguration_ClientId"],
+            ClientSecret = configuration["SaaSApiConfiguration_ClientSecret"],
+            GrantType = configuration["SaaSApiConfiguration_GrantType"],
+            Resource = configuration["SaaSApiConfiguration_Resource"],
+            TenantId = configuration["SaaSApiConfiguration_TenantId"],
+            SupportMeteredBilling = Convert.ToBoolean(configuration["SaaSApiConfiguration_SupportMeteredBilling"])
         };
 
         var creds = new ClientSecretCredential(config.TenantId.ToString(), config.ClientId.ToString(), config.ClientSecret);
