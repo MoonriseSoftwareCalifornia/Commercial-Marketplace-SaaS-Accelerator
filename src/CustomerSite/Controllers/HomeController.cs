@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE file in the project root for license information.
 
 using Marketplace.SaaS.Accelerator.CustomerSite.Models;
+using Marketplace.SaaS.Accelerator.DataAccess.Context;
 using Marketplace.SaaS.Accelerator.DataAccess.Contracts;
 using Marketplace.SaaS.Accelerator.DataAccess.Entities;
 using Marketplace.SaaS.Accelerator.Services.Contracts;
@@ -14,10 +15,12 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -94,6 +97,8 @@ public class HomeController : BaseController
 
     private PlanService planService = null;
 
+    private readonly SaasKitContext _dbContext;
+
     /// <summary>
     /// The user service.
     /// </summary>
@@ -118,8 +123,9 @@ public class HomeController : BaseController
     /// <param name="cloudConfigs">The cloud configs.</param>
     /// <param name="loggerFactory">The logger factory.</param>
     /// <param name="emailService">The email service.</param>
-    public HomeController(ILogger<HomeController> logger, IFulfillmentApiService apiService, ISubscriptionsRepository subscriptionRepo, IPlansRepository planRepository, IUsersRepository userRepository, IApplicationLogRepository applicationLogRepository, ISubscriptionLogRepository subscriptionLogsRepo, IApplicationConfigRepository applicationConfigRepository, IEmailTemplateRepository emailTemplateRepository, IOffersRepository offersRepository, IPlanEventsMappingRepository planEventsMappingRepository, IOfferAttributesRepository offerAttributesRepository, IEventsRepository eventsRepository, ILoggerFactory loggerFactory, IEmailService emailService)
+    public HomeController(SaasKitContext dbContext, ILogger<HomeController> logger, IFulfillmentApiService apiService, ISubscriptionsRepository subscriptionRepo, IPlansRepository planRepository, IUsersRepository userRepository, IApplicationLogRepository applicationLogRepository, ISubscriptionLogRepository subscriptionLogsRepo, IApplicationConfigRepository applicationConfigRepository, IEmailTemplateRepository emailTemplateRepository, IOffersRepository offersRepository, IPlanEventsMappingRepository planEventsMappingRepository, IOfferAttributesRepository offerAttributesRepository, IEventsRepository eventsRepository, ILoggerFactory loggerFactory, IEmailService emailService)
     {
+        _dbContext = dbContext;
         this.apiService = apiService;
         this.subscriptionRepository = subscriptionRepo;
         this.subscriptionLogRepository = subscriptionLogsRepo;
@@ -514,6 +520,158 @@ public class HomeController : BaseController
     }
 
     /// <summary>
+    /// Setup a subscription page
+    /// </summary>
+    /// <param name="Id"></param>
+    /// <returns></returns>
+    public async Task<IActionResult> Setup(Guid Id)
+    {
+        var entity = await _dbContext.Subscriptions.FirstOrDefaultAsync(f => f.AmpsubscriptionId == Id);
+
+        ViewData["SubScription"] = entity;
+        ViewData["MsgSent"] = false;
+
+        var model = new CustomerQuestionaire()
+        {
+            AmpsubscriptionId = entity.AmpsubscriptionId
+        };
+
+        var data = await _dbContext.CosmosInstalls.FirstOrDefaultAsync(f => f.AmpsubscriptionId == Id);
+
+        if (data != null)
+        {
+            model.CWSAzureB2CProviderList = data.CWSAzureB2CProviderList;
+            model.PublisherDnsNames = data.PublisherDnsNames;
+
+            model.UseCWSEntraID = data.UseCWSEntraID;
+            model.UseCustomerEntraID = data?.UseCustomerEntraID ?? false;
+
+            model.IsCosmosSite = data.IsCosmosSite;
+            model.AllowLocalLogins = data.AllowLocalLogins ?? false;
+            model.Comments = data.Comments;
+            model.EditorDnsNames = data.EditorDnsNames;
+            model.DomainHostedByCosmos = data.DomainHostedByCosmos;
+            model.MalwareScan = data.MalwareScan;
+        }
+
+        return View(model);
+    }
+
+    /// <summary>
+    /// Posts the setup information back to the database
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Setup(CustomerQuestionaire model)
+    {
+        var subscription = await _dbContext.Subscriptions.FirstOrDefaultAsync(f => f.AmpsubscriptionId == model.AmpsubscriptionId);
+
+        ViewData["SubScription"] = subscription;
+        ViewData["MsgSent"] = false;
+
+        var addInstall = false;
+
+        if (ModelState.IsValid)
+        {
+            var install = await _dbContext.CosmosInstalls.FirstOrDefaultAsync(f => f.AmpsubscriptionId.Equals(model.AmpsubscriptionId));
+
+            if (install == null)
+            {
+                install = new CosmosInstall();
+                addInstall = true;
+            }
+
+            install.SubscriptionId = subscription.Id;
+            install.AllowLocalLogins = model.AllowLocalLogins;
+            install.Comments = model.Comments;
+            install.DomainHostedByCosmos = model.DomainHostedByCosmos;
+            install.InternalNotes = $"<p>Customer submitted setup information on {DateTimeOffset.UtcNow.ToString()}";
+            install.IsCosmosSite = model.IsCosmosSite;
+            install.LastUpdatedByCustomer = DateTimeOffset.UtcNow;
+            install.UseCustomerEntraID = model.UseCustomerEntraID;
+            install.UseCWSEntraID = model.UseCWSEntraID;
+            install.AmpsubscriptionId = model.AmpsubscriptionId;
+            install.PublisherDnsNames = model.PublisherDnsNames;
+            install.MalwareScan = model.MalwareScan;
+
+            if (addInstall)
+            {
+                _dbContext.Add(install);
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            var builder = new StringBuilder();
+
+            builder.AppendLine($"<p>The following contains a copy of the website setup information for {CurrentUserName}:</p>");
+            builder.AppendLine("<p></p>");
+            builder.AppendLine($"<p>Azure Marketplace Subscription ID: {model.AmpsubscriptionId}</p>");
+            builder.AppendLine("<p></p>");
+            builder.AppendLine($"<p>Website DNS name(s): {model.PublisherDnsNames}</p>");
+            builder.AppendLine("<p></p>");
+            builder.AppendLine("<p>Domain hosted by Cosmos?<br />");
+            if (model.DomainHostedByCosmos)
+            {
+                builder.AppendLine("&nbsp;&nbsp; <b>Yes</b></p>");
+            }
+            else
+            {
+                builder.AppendLine("&nbsp;&nbsp; <b>No</b></p>");
+            }
+            builder.AppendLine("<p></p>");
+            if (model.UseCWSEntraID)
+            {
+                builder.AppendLine("\t<p>Manage users with: Microsoft Entra ID.</p>");
+            }
+            else if (model.UseCustomerEntraID)
+            {
+                builder.AppendLine("\t<p>Manage users with: Microsoft Entra ID (Customer owned).</p>");
+            } 
+            else
+            {
+                builder.AppendLine("\t<p>Manage user accounts in website.</p>");
+            }
+            builder.AppendLine("<p></p>");
+            builder.AppendLine("<span style='text-decoration-line: underline'>Questions/Requests:</span><br />");
+            builder.AppendLine($"{model.Comments}");
+            builder.AppendLine("<p></p>");
+            builder.AppendLine($"<p>Request Submitted: {DateTimeOffset.UtcNow.ToString()}</p>");
+            builder.AppendLine("<p></p>");
+
+
+            var smtpHost = applicationConfigRepository.GetValueByName("SMTPHost");
+            var smptPort = int.Parse(applicationConfigRepository.GetValueByName("SMTPPort"));
+            var smtpFromEmail = applicationConfigRepository.GetValueByName("SMTPFromEmail");
+            var smtpPassword = applicationConfigRepository.GetValueByName("SMTPPassword");
+            var smtpUserName = applicationConfigRepository.GetValueByName("SMTPUserName");
+            var smtpSslEnabled = bool.Parse(applicationConfigRepository.GetValueByName("SMTPSslEnabled"));
+
+
+            var emailContent = new EmailContentModel()
+            {
+                CustomerEmail = CurrentUserEmailAddress,
+                ToEmails = "notifications@cosmosws.io",
+                CopyToCustomer = true,
+                Subject = "Cosmos Website Setup Information",
+                Body = builder.ToString(),
+                SMTPHost = smtpHost,
+                SSL = smtpSslEnabled,
+                Password = smtpPassword,
+                UserName = smtpUserName,
+                FromEmail = smtpFromEmail,
+                Port = smptPort
+            };
+
+            emailService.SendEmail(emailContent);
+            ViewData["MsgSent"] = true;
+        }
+
+        return this.View(viewName: "Setup", model: model);
+    }
+
+    /// <summary>
     /// Subscriptions the operation.
     /// </summary>
     /// <param name="subscriptionResultExtension">The subscription result extension.</param>
@@ -614,6 +772,11 @@ public class HomeController : BaseController
                 }
 
                 this.notificationStatusHandlers.Process(subscriptionId);
+
+                if (operation == "Activate")
+                {
+                    return RedirectToAction("Setup", new { Id = subscriptionId });
+                }
 
                 return this.RedirectToAction(nameof(this.ProcessMessage), new { action = operation, status = operation });
             }
@@ -792,8 +955,9 @@ public class HomeController : BaseController
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public async Task<IActionResult> CustomerSupport()
+    public IActionResult CustomerSupport()
     {
+        ViewData["MsgSent"] = false;
         this.logger.LogInformation("Home Controller / CustomerSupport ");
         try
         {
@@ -831,7 +995,7 @@ public class HomeController : BaseController
     [Authorize]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CustomerSupport(CustomerSupportViewModel model)
+    public IActionResult CustomerSupport(CustomerSupportViewModel model)
     {
         this.logger.LogInformation("Home Controller / POST CustomerSupport ");
         try
@@ -881,6 +1045,7 @@ public class HomeController : BaseController
                 };
 
                 emailService.SendEmail(emailContent);
+                ViewData["MsgSent"] = true;
 
                 return this.View(model);
             }

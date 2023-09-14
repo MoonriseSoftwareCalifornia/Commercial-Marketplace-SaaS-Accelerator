@@ -62,18 +62,18 @@ public class Startup
 
         var config = new SaaSApiClientConfiguration()
         {
-            AdAuthenticationEndPoint = this.Configuration["SaaSApiConfiguration_AdAuthenticationEndPoint"],
-            ClientId = this.Configuration["SaaSApiConfiguration_ClientId"],
-            ClientSecret = this.Configuration["SaaSApiConfiguration_ClientSecret"],
-            MTClientId = this.Configuration["SaaSApiConfiguration_MTClientId"],
-            FulFillmentAPIBaseURL = this.Configuration["SaaSApiConfiguration_FulFillmentAPIBaseURL"],
-            FulFillmentAPIVersion = this.Configuration["SaaSApiConfiguration_FulFillmentAPIVersion"],
-            GrantType = this.Configuration["SaaSApiConfiguration_GrantType"],
-            Resource = this.Configuration["SaaSApiConfiguration_Resource"],
-            SaaSAppUrl = this.Configuration["SaaSApiConfiguration_SaaSAppUrl"],
-            SignedOutRedirectUri = this.Configuration["SaaSApiConfiguration_SignedOutRedirectUri"],
-            TenantId = this.Configuration["SaaSApiConfiguration_TenantId"],
-            Environment = this.Configuration["SaaSApiConfiguration_Environment"]
+            AdAuthenticationEndPoint = this.Configuration["saasapiconfiguration:AdAuthenticationEndPoint"],
+            ClientId = this.Configuration["saasapiconfiguration:ClientId"],
+            ClientSecret = this.Configuration["saasapiconfiguration:ClientSecret"],
+            MTClientId = this.Configuration["saasapiconfiguration:MTClientId"],
+            FulFillmentAPIBaseURL = this.Configuration["saasapiconfiguration:FulFillmentAPIBaseURL"],
+            FulFillmentAPIVersion = this.Configuration["saasapiconfiguration:FulFillmentAPIVersion"],
+            GrantType = this.Configuration["saasapiconfiguration:GrantType"],
+            Resource = this.Configuration["saasapiconfiguration:Resource"],
+            SaaSAppUrl = this.Configuration["saasapiconfiguration:SaaSAppUrl"],
+            SignedOutRedirectUri = this.Configuration["saasapiconfiguration:SignedOutRedirectUri"],
+            TenantId = this.Configuration["saasapiconfiguration:TenantId"],
+            Environment = this.Configuration["saasapiconfiguration:Environment"]
         };
         var creds = new ClientSecretCredential(config.TenantId.ToString(), config.ClientId.ToString(), config.ClientSecret);
 

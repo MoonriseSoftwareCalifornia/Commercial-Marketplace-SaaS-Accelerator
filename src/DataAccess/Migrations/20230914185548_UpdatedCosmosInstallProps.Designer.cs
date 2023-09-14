@@ -4,6 +4,7 @@ using Marketplace.SaaS.Accelerator.DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Marketplace.SaaS.Accelerator.DataAccess.Migrations
 {
     [DbContext(typeof(SaasKitContext))]
-    partial class SaasKitContextModelSnapshot : ModelSnapshot
+    [Migration("20230914185548_UpdatedCosmosInstallProps")]
+    partial class UpdatedCosmosInstallProps
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,9 +81,6 @@ namespace Marketplace.SaaS.Accelerator.DataAccess.Migrations
                     b.Property<bool?>("AllowLocalLogins")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("AmpsubscriptionId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("CWSAzureB2CProviderList")
                         .HasColumnType("nvarchar(max)");
 
@@ -94,11 +93,14 @@ namespace Marketplace.SaaS.Accelerator.DataAccess.Migrations
                     b.Property<string>("CosmosAccount")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("CosmosSubscriptionId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTimeOffset>("DateTimeProvisioned")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<bool>("DomainHostedByCosmos")
-                        .HasColumnType("bit");
+                    b.Property<string>("DnsNamesHostedByCWS")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EditorAppPlan")
                         .HasColumnType("nvarchar(max)");
@@ -139,7 +141,7 @@ namespace Marketplace.SaaS.Accelerator.DataAccess.Migrations
                     b.Property<int>("SubscriptionId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("UseCWSEntraID")
+                    b.Property<bool?>("UseCWSEntraID")
                         .HasColumnType("bit");
 
                     b.Property<bool?>("UseCustomerEntraID")

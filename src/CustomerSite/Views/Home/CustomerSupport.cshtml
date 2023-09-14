@@ -1,42 +1,71 @@
 ﻿@using Marketplace.SaaS.Accelerator.Services.Models;
 @model Marketplace.SaaS.Accelerator.CustomerSite.Models.CustomerSupportViewModel
-
+@{
+    var msgSent = (bool)ViewData["MsgSent"];
+}
 <div>
     <div class="container">
         <br />
-        @Html.ValidationSummary()
-        <form method="post">
-            @Html.AntiForgeryToken()
+        @if (msgSent)
+        {
+
             <div class="card">
                 <div class="card-body">
                     <div class="row">
                         <div class="col">
                             <div class="mb-3">
-                                <h3 class="card-title">Contact Customer Support</h3>
+                                <h3 class="card-title">Message Sent</h3>
                             </div>
+
                             <div class="mb-3">
-                                <label asp-for="CustomerEmail" class="form-label"></label>
-                                <input class="form-control" asp-for="CustomerEmail" aria-describedby="CustomerEmail">
-                                <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-                                <span asp-validation-for="CustomerEmail" class="text-danger"></span>
-                            </div>
-                            <div class="mb-3">
-                                <label asp-for="Subject" class="form-label"></label>
-                                <input class="form-control" asp-for="Subject" aria-describedby="Subject">
-                                <span asp-validation-for="Subject" class="text-danger"></span>
-                            </div>
-                            <div class="mb-3">
-                                @Html.LabelFor(m => m.MessageContent, new { @class = "form-label" })
-                                @Html.TextAreaFor(m => m.MessageContent, new { @class = "form-control" })
-                                <span asp-validation-for="MessageContent" class="text-danger"></span>
-                            </div>
-                            <div class="mb-3">
-                                <button class="btn btn-success">Send <i class="fa-regular fa-paper-plane"></i></button>
+                                <p>Thank you for contacting our customer support!  We we contact you as soon as possible.</p>
+                                <a class="btn btn-success" href="/">Home Page</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </form>
+        }
+        else
+        {
+            <form method="post">
+                @Html.AntiForgeryToken()
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3">
+                                    <h3 class="card-title">Contact Customer Support</h3>
+                                    <div asp-validation-summary="All" class="text-danger"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <label asp-for="CustomerEmail" class="form-label"></label>
+                                    <input class="form-control" asp-for="CustomerEmail" aria-describedby="CustomerEmail">
+                                    <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                                    <span asp-validation-for="CustomerEmail" class="text-danger"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <label asp-for="Subject" class="form-label"></label>
+                                    <input class="form-control" asp-for="Subject" aria-describedby="Subject">
+                                    <span asp-validation-for="Subject" class="text-danger"></span>
+                                </div>
+                                <div class="mb-3">
+                                    @Html.LabelFor(m => m.MessageContent, new { @class = "form-label" })
+                                    @Html.TextAreaFor(m => m.MessageContent, new { @class = "form-control" })
+                                    <span asp-validation-for="MessageContent" class="text-danger"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <button class="btn btn-primary">Send <i class="fa-regular fa-paper-plane"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        }
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

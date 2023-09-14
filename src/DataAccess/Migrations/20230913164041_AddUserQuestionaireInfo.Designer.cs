@@ -4,6 +4,7 @@ using Marketplace.SaaS.Accelerator.DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,13 +12,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Marketplace.SaaS.Accelerator.DataAccess.Migrations
 {
     [DbContext(typeof(SaasKitContext))]
-    partial class SaasKitContextModelSnapshot : ModelSnapshot
+    [Migration("20230913164041_AddUserQuestionaireInfo")]
+    partial class AddUserQuestionaireInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.21")
+                .HasAnnotation("ProductVersion", "6.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -79,26 +81,20 @@ namespace Marketplace.SaaS.Accelerator.DataAccess.Migrations
                     b.Property<bool?>("AllowLocalLogins")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("AmpsubscriptionId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("CWSAzureB2CProviderList")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CdnName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Comments")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CosmosAccount")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("DateTimeProvisioned")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<Guid>("CosmosSubscriptionId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("DomainHostedByCosmos")
-                        .HasColumnType("bit");
+                    b.Property<string>("DnsNamesHostedByCWS")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EditorAppPlan")
                         .HasColumnType("nvarchar(max)");
@@ -109,17 +105,11 @@ namespace Marketplace.SaaS.Accelerator.DataAccess.Migrations
                     b.Property<string>("FrontDoorName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("InternalNotes")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsCosmosSite")
                         .HasColumnType("bit");
 
                     b.Property<DateTimeOffset>("LastUpdatedByCustomer")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<bool>("MalwareScan")
-                        .HasColumnType("bit");
 
                     b.Property<string>("PublisherAppPlan")
                         .HasColumnType("nvarchar(max)");
@@ -136,10 +126,10 @@ namespace Marketplace.SaaS.Accelerator.DataAccess.Migrations
                     b.Property<string>("StorageAccount")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SubscriptionId")
+                    b.Property<int?>("SubscriptionId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("UseCWSEntraID")
+                    b.Property<bool?>("UseCWSEntraID")
                         .HasColumnType("bit");
 
                     b.Property<bool?>("UseCustomerEntraID")
@@ -149,7 +139,7 @@ namespace Marketplace.SaaS.Accelerator.DataAccess.Migrations
 
                     b.HasIndex("SubscriptionId");
 
-                    b.ToTable("CosmosInstalls");
+                    b.ToTable("CosmosInstall");
                 });
 
             modelBuilder.Entity("Marketplace.SaaS.Accelerator.DataAccess.Entities.DatabaseVersionHistory", b =>
@@ -1121,9 +1111,7 @@ namespace Marketplace.SaaS.Accelerator.DataAccess.Migrations
                 {
                     b.HasOne("Marketplace.SaaS.Accelerator.DataAccess.Entities.Subscriptions", "Subscription")
                         .WithMany("CosmosInstalls")
-                        .HasForeignKey("SubscriptionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SubscriptionId");
 
                     b.Navigation("Subscription");
                 });

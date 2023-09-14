@@ -1,0 +1,135 @@
+﻿@using Marketplace.SaaS.Accelerator.CustomerSite.Models;
+@using Marketplace.SaaS.Accelerator.DataAccess.Entities;
+@model CustomerQuestionaire
+@{
+    ViewData["Title"] = "Setup";
+    var subscription = (Subscriptions)ViewData["SubScription"];
+    var msgSent = (bool)ViewData["MsgSent"];
+}
+
+<div class="row justify-content-center" style="margin-top:110px;">
+    @if (msgSent)
+    {
+        <h2 class="mt-5">
+            Setup Information Received
+        </h2>
+        <p>Your setup information has been received.  Shortly you should receive an email with a copy of that information.</p>
+        <p>Next, our staff will be provisioning your website as soon as possible.  When the website is ready, you will receive an email with further information.</p>
+        <p>Thank you for choosing Cosmos!</p>
+        <div class="mb-3">
+            <a class="btn btn-primary" href="/">Portal home page  <i class="fa-solid fa-circle-arrow-right"></i></a>
+        </div>
+    }
+    else
+    {
+        <div class="col-md-8 mt-5">
+            <h2>
+                Setup
+            </h2>
+            <p>We need a few details so we can setup your website:</p>
+            <form id="frmSetup" asp-action="Setup" asp-controller="Home" method="post">
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.AmpsubscriptionId)
+                @Html.HiddenFor(model => model.IsCosmosSite)
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <p class="card-title">Domain Name</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="PublisherDnsNames" class="form-label"></label>
+                            <input asp-for="PublisherDnsNames" class="form-control" aria-describedby="info1">
+                            <span asp-validation-for="PublisherDnsNames" class="text-danger"></span>
+                            <div id="info1" class="form-text">What DNS name(s) do you want for your website?</div>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" asp-for="DomainHostedByCosmos" aria-describedby="info2">
+                            <label class="form-check-label" asp-for="DomainHostedByCosmos"></label>
+                            <span asp-validation-for="DomainHostedByCosmos" class="text-danger"></span>
+                            <div id="info2" class="form-text">
+                                Cosmos domain hosting is $14.95 per year, per domain. New users get a free domain
+                                for a year on the annual plan.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <p class="card-title">User Accounts</p>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Please choose one option below:</p>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="uacheckbox form-check-input" asp-for="UseCWSEntraID" aria-describedby="info3">
+                            <label class="form-check-label" asp-for="UseCWSEntraID"></label>
+                            <span asp-validation-for="UseCWSEntraID" class="text-danger"></span>
+                            <div id="info3" class="form-text">
+                                Use <a target="_blank" href="https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-id">Entra ID</a> managed by us to login in users with Email or Apple, Google or Microsoft.
+                            </div>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="uacheckbox form-check-input" asp-for="UseCustomerEntraID" aria-describedby="info4">
+                            <label class="form-check-label" asp-for="UseCustomerEntraID"></label>
+                            <span asp-validation-for="UseCustomerEntraID" class="text-danger"></span>
+                            <div id="info4" class="form-text">
+                                We can help you setup your <a target="_blank" href="https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-id">Entra ID</a> for Cosmos.
+                            </div>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="uacheckbox form-check-input" asp-for="AllowLocalLogins" aria-describedby="info5">
+                            <label class="form-check-label" asp-for="AllowLocalLogins"></label>
+                            <span asp-validation-for="AllowLocalLogins" class="text-danger"></span>
+                            <div id="info5" class="form-text">
+                                Use the website to manage user identity and authentication.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <p class="card-title">Options/Requests</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" asp-for="MalwareScan" aria-describedby="info6">
+                            <label class="form-check-label" asp-for="MalwareScan"></label>
+                            <span asp-validation-for="MalwareScan" class="text-danger"></span>
+                            <div id="info6" class="form-text">
+                                This option scans files uploaded to your website for malware. Cost is $19.90 per website, per month.
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Comments" class="form-label"></label>
+                            <textarea asp-for="Comments" class="form-control" rows="6" aria-describedby="info7"></textarea>
+                            <span asp-validation-for="Comments" class="text-danger"></span>
+                            <div id="info7" class="form-text">Please let us know if you have any questions or special requests.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">Save Settings</button>
+                </div>
+            </form>
+        </div>
+    }
+</div>
+
+<script>
+    $(document).ready(function () {
+        $(".uacheckbox").change(function () {
+            $(".uacheckbox").each(function () {
+                $(this).prop('checked', false);
+            });
+            $(this).prop('checked', true);
+        });
+    });
+
+    $("#frmSetup").validate();
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

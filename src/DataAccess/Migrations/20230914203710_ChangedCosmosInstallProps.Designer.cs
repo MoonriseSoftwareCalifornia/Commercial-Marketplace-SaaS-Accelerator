@@ -4,6 +4,7 @@ using Marketplace.SaaS.Accelerator.DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Marketplace.SaaS.Accelerator.DataAccess.Migrations
 {
     [DbContext(typeof(SaasKitContext))]
-    partial class SaasKitContextModelSnapshot : ModelSnapshot
+    [Migration("20230914203710_ChangedCosmosInstallProps")]
+    partial class ChangedCosmosInstallProps
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,10 +138,10 @@ namespace Marketplace.SaaS.Accelerator.DataAccess.Migrations
                     b.Property<string>("StorageAccount")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SubscriptionId")
+                    b.Property<int?>("SubscriptionsId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("UseCWSEntraID")
+                    b.Property<bool?>("UseCWSEntraID")
                         .HasColumnType("bit");
 
                     b.Property<bool?>("UseCustomerEntraID")
@@ -147,7 +149,7 @@ namespace Marketplace.SaaS.Accelerator.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SubscriptionId");
+                    b.HasIndex("SubscriptionsId");
 
                     b.ToTable("CosmosInstalls");
                 });
@@ -1119,13 +1121,9 @@ namespace Marketplace.SaaS.Accelerator.DataAccess.Migrations
 
             modelBuilder.Entity("Marketplace.SaaS.Accelerator.DataAccess.Entities.CosmosInstall", b =>
                 {
-                    b.HasOne("Marketplace.SaaS.Accelerator.DataAccess.Entities.Subscriptions", "Subscription")
+                    b.HasOne("Marketplace.SaaS.Accelerator.DataAccess.Entities.Subscriptions", null)
                         .WithMany("CosmosInstalls")
-                        .HasForeignKey("SubscriptionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Subscription");
+                        .HasForeignKey("SubscriptionsId");
                 });
 
             modelBuilder.Entity("Marketplace.SaaS.Accelerator.DataAccess.Entities.KnownUsers", b =>

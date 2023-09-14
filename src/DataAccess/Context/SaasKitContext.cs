@@ -14,6 +14,8 @@ public partial class SaasKitContext : DbContext
     {
     }
 
+    public virtual DbSet<CosmosInstall> CosmosInstalls { get; set; }
+
     public virtual DbSet<ApplicationConfiguration> ApplicationConfiguration { get; set; }
     public virtual DbSet<ApplicationLog> ApplicationLog { get; set; }
     public virtual DbSet<DatabaseVersionHistory> DatabaseVersionHistory { get; set; }

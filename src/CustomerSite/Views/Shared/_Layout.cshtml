@@ -36,31 +36,36 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #FCFCFC !important;
+            background-color: rgb(236 236 253) !important;
         }
 
         h1 {
+            font-family: 'Poppins', sans-serif;
             font-size: 60px;
             font-weight: 600;
         }
 
         h2 {
+            font-family: 'Poppins', sans-serif;
             font-size: 28px;
             font-weight: 600;
         }
 
         h3 {
+            font-family: 'Poppins', sans-serif;
             font-size: 20px;
             font-weight: 500;
             text-transform: uppercase;
         }
 
         h4 {
+            font-family: 'Poppins', sans-serif;
             font-size: 20px;
             font-weight: 500;
         }
 
         p {
+            font-family: 'Poppins', sans-serif;
             font-size: 16px;
         }
 
@@ -125,20 +130,24 @@
         .btn-info {
             background-color: #00ECC2 !important;
         }
+
+        .cm-top-nav-bar {
+            background-color: #5d17cf !important;
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg fixed-top cm-top-nav-bar">
+    <nav class="navbar navbar-expand-lg fixed-top cm-top-nav-bar text-light">
         <div class="container-fluid">
             <a class="navbar-brand mr-auto mr-lg-0" href="@Url.Action("Index", "Home")">
-                <img src="~/images/PrimaryLogo_Black.png" alt="Cosmos Website Solutions, Inc. logo" height="24" />
+                <img src="~/images/PrimaryLogo_White.png" alt="Cosmos Website Solutions, Inc. logo" height="24" />
             </a>
 
             <div class="d-flex text-end">
                 @if (this.User.Identity.IsAuthenticated)
                 {
                     <span class="cm-username text-white">@User.Identity.Name&nbsp;</span>
-                    <a class="cm-logout" asp-controller="Account" asp-action="SignOut">&nbsp;<i class="fa fa-sign-out fa-2x"></i></a>
+                    <a class="nav-link" asp-controller="Account" asp-action="SignOut">&nbsp;<i class="fa fa-sign-out"></i></a>
                 }
                 else
                 {
@@ -170,7 +179,7 @@
 
     <footer class="cm-footer">
         <div class="container text-center">
-            &copy; 2020 - SaasKit - Demo
+            &copy; 2023 - Cosmos Website Solutions, Inc.
         </div>
     </footer>
 
