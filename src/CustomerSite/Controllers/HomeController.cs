@@ -10,6 +10,7 @@ using Marketplace.SaaS.Accelerator.Services.Exceptions;
 using Marketplace.SaaS.Accelerator.Services.Models;
 using Marketplace.SaaS.Accelerator.Services.Services;
 using Marketplace.SaaS.Accelerator.Services.StatusHandlers;
+using Marketplace.SaaS.Accelerator.Services.Utilities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
@@ -605,8 +606,10 @@ public class HomeController : BaseController
 
             await _dbContext.SaveChangesAsync();
 
-            var builder = new StringBuilder();
+            var emailTemplate = EmailTemplates.StandardBlankTemplate;
 
+            var builder = new StringBuilder();
+            builder.AppendLine("<table style=\"width:100%\"><tr><td align=\"left\">");
             builder.AppendLine($"<p>The following contains a copy of the website setup information for {CurrentUserName}:</p>");
             builder.AppendLine("<p></p>");
             builder.AppendLine($"<p>Azure Marketplace Subscription ID: {model.AmpsubscriptionId}</p>");
@@ -647,6 +650,10 @@ public class HomeController : BaseController
             builder.AppendLine("<p></p>");
             builder.AppendLine($"<p>Request Submitted: {DateTimeOffset.UtcNow.ToString()}</p>");
             builder.AppendLine("<p></p>");
+            builder.AppendLine("</td></tr></table>");
+
+            emailTemplate = emailTemplate.Replace("{{{TITLE}}}", "Cosmos Website Setup Information");
+            emailTemplate = emailTemplate.Replace("{{{BODY}}}", builder.ToString());
 
 
             var smtpHost = applicationConfigRepository.GetValueByName("SMTPHost");
@@ -660,10 +667,11 @@ public class HomeController : BaseController
             var emailContent = new EmailContentModel()
             {
                 CustomerEmail = CurrentUserEmailAddress,
-                ToEmails = "notifications@cosmosws.io",
-                CopyToCustomer = true,
+                ToEmails = CurrentUserEmailAddress,
+                CCEmails = "notifications@cosmosws.io",
+                CopyToCustomer = false,
                 Subject = "Cosmos Website Setup Information",
-                Body = builder.ToString(),
+                Body = emailTemplate,
                 SMTPHost = smtpHost,
                 SSL = smtpSslEnabled,
                 Password = smtpPassword,
