@@ -54,6 +54,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="card mb-3">
                     <div class="card-header">
                         <p class="card-title">User Accounts</p>
@@ -92,6 +93,28 @@
                         <p class="card-title">Options/Requests</p>
                     </div>
                     <div class="card-body">
+                        
+                        <div class="mb-3 form-check">
+                            <label class="form-check-label" asp-for="PreloadLayout"></label>
+                            <select asp-for="PreloadLayout" class="form-select" aria-label="Select a layout (optional)">
+                                <option value="" selected>None</option>
+                                <option value="Cosmos Starter Layout">Cosmos Starter Layout (default)</option>
+                                <option value="Blank Layout">Blank Layout</option>
+                                <option value="Bootstrap 5 Inspired by Material Design by Tim Material Kit 2">Bootstrap 5 Inspired by Material Design by Tim Material Kit 2</option>
+                                <option value="Bootstrap 5 Starter (OFFICIAL)">Bootstrap 5 Starter (OFFICIAL)</option>
+                                <option value="Bootstrap 5 Tutorial by Traversy Media">Bootstrap 5 Tutorial by Traversy Media</option>
+                                <option value="California Design System">California Design System</option>
+                                <option value="California State Web Template">California State Web Template</option>
+                                <option value="Clean Blog Layout">Clean Blog Layout</option>
+                                <option value="Material Design for Bootstrap 5 by MDB">Material Design for Bootstrap 5 by MDB</option>
+                                <option value="Material Design for Bootstrap 5 by MDB (Dark Theme)">Material Design for Bootstrap 5 by MDB (Dark Theme)</option>
+                            </select>
+                            <span asp-validation-for="PreloadLayout" class="text-danger"></span>
+                            <div id="info6" class="form-text">
+                                If you would like your site pre-loaded with one of our <a href="https://cosmos-layouts.moonrise.net/" target="_blank">Community Layouts</a>,
+                                please select one here.
+                            </div>
+                        </div>
                         <div class="mb-3 form-check">
                             <input type="checkbox" class="form-check-input" asp-for="MalwareScan" aria-describedby="info6">
                             <label class="form-check-label" asp-for="MalwareScan"></label>

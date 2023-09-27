@@ -73,6 +73,12 @@ public class CosmosInstall
     [Display(Name = "SignalR Name")]
     public string SignalRName { get; set; }
 
+    [Display(Name = "Editor Url")]
+    public string EditorUrl { get; set; }
+
+    [Display(Name = "Publisher Url")]
+    public string PublisherUrl { get; set; }
+
     #endregion
 
     #region USER QUESTIONAIRE
@@ -142,6 +148,11 @@ public class CosmosInstall
     /// Internal notes for this installation (Cosmos staff only)
     /// </summary>
     public string InternalNotes { get; set; }
+
+    /// <summary>
+    /// Preload the website with this community layout
+    /// </summary>
+    public string PreloadLayout { get; set; }
 
     public virtual Subscriptions Subscription { get; set; }
 

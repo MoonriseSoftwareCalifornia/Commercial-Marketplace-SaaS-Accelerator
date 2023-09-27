@@ -552,6 +552,7 @@ public class HomeController : BaseController
             model.EditorDnsNames = data.EditorDnsNames;
             model.DomainHostedByCosmos = data.DomainHostedByCosmos;
             model.MalwareScan = data.MalwareScan;
+            model.PreloadLayout = data.PreloadLayout;
         }
 
         return View(model);
@@ -595,6 +596,7 @@ public class HomeController : BaseController
             install.AmpsubscriptionId = model.AmpsubscriptionId;
             install.PublisherDnsNames = model.PublisherDnsNames;
             install.MalwareScan = model.MalwareScan;
+            install.PreloadLayout = model.PreloadLayout;
 
             if (addInstall)
             {
@@ -632,6 +634,12 @@ public class HomeController : BaseController
             else
             {
                 builder.AppendLine("\t<p>Manage user accounts in website.</p>");
+            }
+            if (!string.IsNullOrEmpty(install.PreloadLayout))
+            {
+
+                builder.AppendLine("<p></p>");
+                builder.AppendLine($"\t<p>Preload website with layout: '{install.PreloadLayout}.'</p>");
             }
             builder.AppendLine("<p></p>");
             builder.AppendLine("<span style='text-decoration-line: underline'>Questions/Requests:</span><br />");

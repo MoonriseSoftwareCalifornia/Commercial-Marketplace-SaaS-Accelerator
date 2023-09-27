@@ -58,6 +58,12 @@ public class CustomerQuestionaire
     [Display(Name = "Manage user accounts with your own Entra ID?")]
     public bool UseCustomerEntraID { get; set; } = false;
 
+    /// <summary>
+    /// User selects a layout they would like preloaded
+    /// </summary>
+    [Display(Name = "Select a layout you would like preloaded (optional):")]
+    public string PreloadLayout { get; set; }
+
     [Display(Name = "Do you want malware protection?")]
     public bool MalwareScan { get; set; } = false;
 
